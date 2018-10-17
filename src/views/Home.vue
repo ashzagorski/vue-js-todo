@@ -38,7 +38,7 @@ body {
 <script>
 
    var axios = require("axios");
-   
+
 export default {
   data: function() {
     return {
@@ -81,14 +81,14 @@ export default {
     deleteTask: function() {
       var incompleteTasks = [];
       for(var i = 0; i < this.tasks.length; i++) {
-        var task = task[i];
+        var task = this.tasks[i];
 
-        if (task.completed) {
+        if (!task.completed) {
           incompleteTasks.push(task);
         }
       }
       this.tasks = incompleteTasks;
-      },
+      }
   },
   computed: {}
 };
