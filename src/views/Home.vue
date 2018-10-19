@@ -11,7 +11,7 @@
         </div>
       </div>
 
-  <div> <button v-on:click="deleteTask()">Delete Completed Tasks</button> </div>
+  <div> <button v-on:click="removeCompleted()">Delete Completed Tasks</button> </div>
 
 <div>
   <h3>Create New Task</h3>
@@ -60,10 +60,18 @@ export default {
         inputTask.completed = !inputTask.completed;
       },
     addTask: function() {
-      if (this.newTask.text!== "") {
-        this.tasks.push(this.newTask);
+      var params = {
+                    text: this.newTask.text
+                    };
+
+       axios
+       .post("http://localhost:3000/api/tasks", params)
+       .then(function(response) {
+          this.tasks.push(response.data);
+       }.bind(this));             
+     
+        
         this.newTask = {text: "", id: "", completed: false}; 
-        };
        },   
     completeTask: function(inputTask) {
       var index = this.tasks.indexOf(inputTask);
@@ -78,17 +86,23 @@ export default {
       });
       return count
     },
-    deleteTask: function() {
+      removeCompleted: function() {
       var incompleteTasks = [];
       for(var i = 0; i < this.tasks.length; i++) {
         var task = this.tasks[i];
-
         if (!task.completed) {
           incompleteTasks.push(task);
         }
       }
       this.tasks = incompleteTasks;
-      }
+      
+
+      axios
+      .destroy("http://localhost:3000/api/tasks")
+      .then(function(response) {
+        this.tasks.push(response.data);
+      }.bind(this));
+    }
   },
   computed: {}
 };
